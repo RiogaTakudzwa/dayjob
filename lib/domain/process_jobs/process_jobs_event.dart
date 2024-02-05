@@ -35,12 +35,14 @@ class SearchEvent extends ProcessJobsEvent{
 }
 
 class SetActiveJobEvent extends ProcessJobsEvent{
+  final String jobKey;
   final String jobType;
   final String clientName;
   final String clientAddress;
   final String jobNumber;
 
   SetActiveJobEvent({
+    required this.jobKey,
     required this.jobType,
     required this.clientName,
     required this.clientAddress,
@@ -103,7 +105,7 @@ class LoadJobsEvent extends ProcessJobsEvent{}
 class ClearJobsEvent extends ProcessJobsEvent{}
 
 class DeleteJobEvent extends ProcessJobsEvent{
-  final int jobKey;
+  final String jobKey;
 
   DeleteJobEvent({
     required this.jobKey,

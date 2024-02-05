@@ -18,6 +18,7 @@ class ProcessJobsBloc extends Bloc<ProcessJobsEvent, ProcessJobsState> {
 
   ProcessJobsBloc() : super(ProcessJobsState(
     jobTitle: "Please enter Job Title",
+    jobKey: "New Key",
     jobType: "Please enter Job Type",
     clientName: "Please enter Client Name",
     clientAddress: "Please enter Client Address",
@@ -63,7 +64,8 @@ class ProcessJobsBloc extends Bloc<ProcessJobsEvent, ProcessJobsState> {
         state.startDate,
         state.endDate,
         state.jobs,
-        jobs
+        jobs,
+        state.jobKey
       ));
     }
 
@@ -122,7 +124,8 @@ class ProcessJobsBloc extends Bloc<ProcessJobsEvent, ProcessJobsState> {
       state.startDate,
       state.endDate,
       jobs,
-      jobs
+      jobs,
+      state.jobKey
     ));
   }
 
@@ -140,11 +143,11 @@ class ProcessJobsBloc extends Bloc<ProcessJobsEvent, ProcessJobsState> {
       state.endDate,
       const [],
       const [],
+      state.jobKey
     ));
   }
 
   _onDeleteJob(event, emit) async {
-    await jobsBox.delete(event.jobKey);
 
     // Open hive box
     final data = jobsBox.keys.map((key) {
@@ -166,23 +169,26 @@ class ProcessJobsBloc extends Bloc<ProcessJobsEvent, ProcessJobsState> {
 
     List<JobModel> jobs = Method().loadJobs(data);
 
-    emit(LoadJobs(
-        state.jobTitle,
-        state.jobType,
-        state.clientName,
-        state.clientAddress,
-        state.jobNumber,
-        state.jobDetails,
-        state.tasks,
-        state.jobState,
-        state.startDate,
-        state.endDate,
-        jobs,
-        jobs
-    ));
+    await jobsBox.clear();
 
-    print("Number");
-    print(jobs.length);
+    for(JobModel job in jobs){
+      if(job.jobNumber != event.jobKey){
+        await jobsBox.add({
+          "jobTitle": job.jobTitle,
+          "jobType": job.jobType,
+          "clientName": job.clientName,
+          "clientAddress": job.clientAddress,
+          "jobNumber": job.jobNumber,
+          "jobDetails": job.jobDetails,
+          "tasks": [],
+          "jobState": job.jobState,
+          "startDate": job.startDate,
+          "endDate": job.endDate,
+        });
+      }
+    }
+
+    add(LoadJobsEvent());
   }
 
   _onUpdateJobState(event, emit) async {
@@ -249,6 +255,7 @@ class ProcessJobsBloc extends Bloc<ProcessJobsEvent, ProcessJobsState> {
       DateTime.now().toString(),
       state.jobs,
       state.searchResults,
+      state.jobKey
     ));
 
   }
@@ -270,6 +277,7 @@ class ProcessJobsBloc extends Bloc<ProcessJobsEvent, ProcessJobsState> {
       event.endDate,
       state.jobs,
       state.searchResults,
+      state.jobKey
     ));
 
   }
@@ -289,6 +297,7 @@ class ProcessJobsBloc extends Bloc<ProcessJobsEvent, ProcessJobsState> {
       state.endDate,
       state.jobs,
       state.searchResults,
+      state.jobKey
     ));
 
   }
@@ -308,6 +317,7 @@ class ProcessJobsBloc extends Bloc<ProcessJobsEvent, ProcessJobsState> {
       state.endDate,
       state.jobs,
       state.searchResults,
+      event.jobKey
     ));
 
   }

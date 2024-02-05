@@ -42,8 +42,12 @@ class JobWidget extends StatefulWidget {
 }
 
 class _JobWidgetState extends State<JobWidget> {
-  navigationFunction(int activeBottomNavigationIconIndex, String screenTitle,
-      int screenIndex, bool isBottomNavigationVisible) {
+  navigationFunction(
+      int activeBottomNavigationIconIndex,
+      String screenTitle,
+      int screenIndex,
+      bool isBottomNavigationVisible
+  ) {
     BlocProvider.of<NavigationBarVisibilityBloc>(context).add(
         UpdateNavigationBarVisibilityEvent(
             visibility: isBottomNavigationVisible));
@@ -73,14 +77,6 @@ class _JobWidgetState extends State<JobWidget> {
         index: BlocProvider.of<ScreenNavigationBloc>(context)
             .state
             .previousScreenIndex));
-  }
-
-  void deleteJob() {
-    // Delete job
-    BlocProvider.of<ProcessJobsBloc>(context)
-        .add(SearchEvent(searchString: ""));
-
-    setState(() {});
   }
 
   @override
@@ -138,6 +134,7 @@ class _JobWidgetState extends State<JobWidget> {
                     .add(const UpdateScreenIndexEvent(index: 3));
 
                 BlocProvider.of<ProcessJobsBloc>(context).add(SetActiveJobEvent(
+                  jobKey: widget.jobNumber,
                   jobType: widget.jobType,
                   clientName: widget.clientName,
                   clientAddress: widget.clientAddress,
@@ -150,14 +147,6 @@ class _JobWidgetState extends State<JobWidget> {
               ),
             ),
           ),
-          IconButton(
-              onPressed: () {
-                deleteJob();
-              },
-              icon: const Icon(
-                Icons.delete_outline,
-                color: ColourScheme.mainAppTheme,
-              ))
         ],
       ),
     );
