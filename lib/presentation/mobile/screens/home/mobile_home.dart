@@ -51,12 +51,8 @@ class _MobileHomeState extends State<MobileHome> {
   void initState() {
 
     if (mounted){
+      BlocProvider.of<ProcessJobsBloc>(context).add(ClearJobsEvent());
       BlocProvider.of<ProcessJobsBloc>(context).add(LoadJobsEvent());
-
-      // BlocProvider.of<ProcessJobsBloc>(context).add(
-      //   SearchEvent(searchText: ""
-      // ));
-
       foundJobs = BlocProvider.of<ProcessJobsBloc>(context).state.jobs;
     }
 
@@ -65,12 +61,7 @@ class _MobileHomeState extends State<MobileHome> {
       if (mounted){
         BlocProvider.of<ProcessJobsBloc>(context).add(ClearJobsEvent());
         BlocProvider.of<ProcessJobsBloc>(context).add(LoadJobsEvent());
-
         foundJobs = BlocProvider.of<ProcessJobsBloc>(context).state.jobs;
-
-        // BlocProvider.of<ProcessJobsBloc>(context).add(
-        //   SearchEvent(searchText: ""
-        // ));
       }
     });
 
@@ -90,6 +81,8 @@ class _MobileHomeState extends State<MobileHome> {
             return BlocBuilder<ProcessJobsBloc, ProcessJobsState>(
               builder: (context, processJobsState) {
 
+                foundJobs = processJobsState.jobs;
+
                 return SizedBox(
                   height: screenHeight - (screenWidth * ScreenConstraints().buttonHeight),
                   width: screenWidth,
@@ -99,13 +92,6 @@ class _MobileHomeState extends State<MobileHome> {
                         screenHeight * ScreenConstraints().appBarHeight
                       ), child: const CustomAppBar(),
                     ),
-
-                    // floatingActionButton: FloatingActionButton(
-                    //   child: Icon(Icons.replay),
-                    //     onPressed: (){
-                    //     setState(() {
-                    //   });
-                    // }),
 
                     body: Column(
                       children: [
