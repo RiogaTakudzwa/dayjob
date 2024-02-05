@@ -31,7 +31,8 @@ class _SubmitButtonState extends State<SubmitButton> {
         widget.submit;
       },
       child: Container(
-        padding: EdgeInsets.only(
+        alignment: Alignment.center,
+        margin: EdgeInsets.only(
           left: screenWidth * ScreenConstraints().screenPaddingSides,
           right: screenWidth * ScreenConstraints().screenPaddingSides,
         ),

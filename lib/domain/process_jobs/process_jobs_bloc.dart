@@ -39,9 +39,9 @@ class ProcessJobsBloc extends Bloc<ProcessJobsEvent, ProcessJobsState> {
     on<SetActiveJobEvent>(_onSetActiveJob);
   }
 
-  _onAddJob(emit, event) async {
+  _onAddJob(event, emit) async {
 
-    String jobNumber = Method().generateJobNumber as String;
+    String jobNumber = Method().generateJobNumber();
 
     await jobsBox.add({
       "jobTitle": event.jobTitle,
@@ -57,7 +57,7 @@ class ProcessJobsBloc extends Bloc<ProcessJobsEvent, ProcessJobsState> {
     });
   }
 
-  _onLoadJobs(emit, event){
+  _onLoadJobs(event, emit){
     // Open hive box
     final data = jobsBox.keys.map((key) {
       final item = jobsBox.get(key);

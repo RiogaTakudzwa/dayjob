@@ -27,6 +27,15 @@ class _CustomAppBarState extends State<CustomAppBar> {
     BlocProvider.of<ScreenNavigationBloc>(context).add(UpdateScreenTitleEvent(
       screenTitle: BlocProvider.of<ScreenNavigationBloc>(context).state.previousScreenTitle
     ));
+
+    BlocProvider.of<ScreenNavigationBloc>(context).add(
+      const UpdateBackButtonStateEvent(
+        isBackButtonActive: false,
+    ));
+
+    BlocProvider.of<ScreenNavigationBloc>(context).add(const UpdateActiveNavigationIconIndexEvent(
+      activeBottomNavigationIconIndex: 0
+    ));
   }
 
   @override
@@ -62,8 +71,10 @@ class _CustomAppBarState extends State<CustomAppBar> {
               TitleText(
                 text: state.screenTitle
               ),
-              Container(), // App status
-               // Spacer to keep things aligned
+              BackArrow(
+                  active: false,
+                  onTap: (){}
+              ), // inactive back arrow to keep things aligned
             ],
           ),
         );

@@ -2,6 +2,8 @@ import 'package:dayjob/common/constraints/colour_scheme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
 
 import '../../../../../common/constraints/screen_constraits.dart';
 import '../../../../../common/widgets/text/title_text.dart';
@@ -74,6 +76,14 @@ class _JobWidgetState extends State<JobWidget> {
 
   }
 
+  void deleteJob() {
+    // Delete job
+    BlocProvider.of<ProcessJobsBloc>(context).add(
+      DeleteJobEvent(jobKey:widget.jobKey
+    ));
+
+  }
+
   setActiveJob(){
     BlocProvider.of<ProcessJobsBloc>(context).add(SetActiveJobEvent(
       jobTitle: widget.jobTitle,
@@ -95,6 +105,12 @@ class _JobWidgetState extends State<JobWidget> {
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Container(
+      margin: EdgeInsets.only(
+        left: screenWidth * ScreenConstraints().screenPaddingSides,
+        right: screenWidth * ScreenConstraints().screenPaddingSides,
+        bottom: screenWidth * ScreenConstraints().screenPaddingSides/2,
+        top: screenWidth * ScreenConstraints().screenPaddingSides/2,
+      ),
       padding: EdgeInsets.only(
         left: screenWidth * ScreenConstraints().screenPaddingSides,
         right: screenWidth * ScreenConstraints().screenPaddingSides,
@@ -124,7 +140,7 @@ class _JobWidgetState extends State<JobWidget> {
                 setActiveJob();
               },
               child: Container(
-                color: Colors.red,
+                alignment: Alignment.centerLeft,
                 child: TitleText(
                   text: widget.jobTitle
                 ),
@@ -133,10 +149,7 @@ class _JobWidgetState extends State<JobWidget> {
           ),
           IconButton(
             onPressed: (){
-              // Delete job
-              BlocProvider.of<ProcessJobsBloc>(context).add(
-                DeleteJobEvent(jobKey:widget.jobKey
-              ));
+              deleteJob();
             },
             icon: const Icon(
               Icons.delete_outline,

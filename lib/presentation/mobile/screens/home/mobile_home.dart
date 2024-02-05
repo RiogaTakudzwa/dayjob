@@ -3,6 +3,8 @@ import 'package:dayjob/presentation/mobile/screens/home/widgets/search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
 
 import '../../../../common/constraints/screen_constraits.dart';
 import '../../../../common/widgets/app_bar/app_bar.dart';
@@ -46,7 +48,20 @@ class _MobileHomeState extends State<MobileHome> {
 
   @override
   void initState() {
-    foundJobs = BlocProvider.of<ProcessJobsBloc>(context).state.jobs;
+
+    if (mounted){
+      BlocProvider.of<ProcessJobsBloc>(context).add(LoadJobsEvent());
+      foundJobs = BlocProvider.of<ProcessJobsBloc>(context).state.jobs;
+    }
+
+    Hive.box("Jobs").listenable().addListener(() {
+      // Bloc Event to reload data from hive box
+      if (mounted){
+        BlocProvider.of<ProcessJobsBloc>(context).add(LoadJobsEvent());
+        foundJobs = BlocProvider.of<ProcessJobsBloc>(context).state.jobs;
+      }
+    });
+
     super.initState();
   }
 
@@ -54,6 +69,7 @@ class _MobileHomeState extends State<MobileHome> {
   Widget build(BuildContext context) {
 
     double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
 
     return BlocBuilder<NavigationBarVisibilityBloc, NavigationBarVisibilityState>(
       builder: (context, navigationBarVisibilityState) {
@@ -62,39 +78,48 @@ class _MobileHomeState extends State<MobileHome> {
             return BlocBuilder<ProcessJobsBloc, ProcessJobsState>(
               builder: (context, processJobsState) {
 
-                return Scaffold(
-                  appBar: PreferredSize(
-                    preferredSize: Size.fromHeight(
-                      screenHeight * ScreenConstraints().appBarHeight
-                    ), child: const CustomAppBar(),
-                  ),
+                return SizedBox(
+                  height: screenHeight - (screenWidth * ScreenConstraints().buttonHeight),
+                  width: screenWidth,
+                  child: Scaffold(
+                    appBar: PreferredSize(
+                      preferredSize: Size.fromHeight(
+                        screenHeight * ScreenConstraints().appBarHeight
+                      ), child: const CustomAppBar(),
+                    ),
 
-                  body: SingleChildScrollView(
-                    child: Column(
+                    body: Column(
                       children: [
                         // Search
-                        TextFormField(
-                          onChanged: (value){
-                            filter(value);
-                          },
-                          keyboardType: TextInputType.emailAddress,
-                          style: const TextStyle(color: Colors.black),
-                          controller: searchController,
-                          obscureText: false,
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.grey.shade200,
-                            hintText: "Search",
-                            hintStyle: const TextStyle(fontSize: 14, color: Colors.black),
-                            //Before Text field Clicked
-                            enabledBorder: const OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey),
-                              borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                            ),
-                            //After text-field Clicked
-                            focusedBorder: const OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey),
-                              borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                        Container(
+                          padding: EdgeInsets.only(
+                            left: screenWidth * ScreenConstraints().screenPaddingSides,
+                            right: screenWidth * ScreenConstraints().screenPaddingSides,
+                            top: screenWidth * ScreenConstraints().screenPaddingSides,
+                          ),
+                          child: TextFormField(
+                            onChanged: (value){
+                              filter(value);
+                            },
+                            keyboardType: TextInputType.emailAddress,
+                            style: const TextStyle(color: Colors.black),
+                            controller: searchController,
+                            obscureText: false,
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.grey.shade200,
+                              hintText: "Search",
+                              hintStyle: const TextStyle(fontSize: 14, color: Colors.black),
+                              //Before Text field Clicked
+                              enabledBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey),
+                                borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                              ),
+                              //After text-field Clicked
+                              focusedBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey),
+                                borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                              ),
                             ),
                           ),
                         ),
@@ -103,29 +128,41 @@ class _MobileHomeState extends State<MobileHome> {
                         // ),
 
                         // List of jobs
-                        ListView.builder(
-                          itemCount: foundJobs.length,
-                          itemBuilder: (context, index){
-                            return JobWidget(
-                              jobTitle: foundJobs.elementAt(index).jobTitle,
-                              jobKey: foundJobs.elementAt(index).key,
-                              jobType: foundJobs.elementAt(index).jobType,
-                              clientName: foundJobs.elementAt(index).clientName,
-                              clientAddress: foundJobs.elementAt(index).clientAddress,
-                              jobNumber: foundJobs.elementAt(index).jobNumber,
-                              jobDetails: foundJobs.elementAt(index).jobDetails,
-                              jobState: foundJobs.elementAt(index).jobState,
-                              startDate: foundJobs.elementAt(index).startDate,
-                              endDate: foundJobs.elementAt(index).endDate,
-                            );
-                          }
-                        )
+
+                        SingleChildScrollView(
+                          child: SizedBox(
+                            height: 300,
+                            child: ListView.builder(
+                              itemCount: foundJobs.length,
+                              itemBuilder: (context, index){
+                                return JobWidget(
+                                  jobTitle: foundJobs.elementAt(index).jobTitle,
+                                  jobKey: foundJobs.elementAt(index).key,
+                                  jobType: foundJobs.elementAt(index).jobType,
+                                  clientName: foundJobs.elementAt(index).clientName,
+                                  clientAddress: foundJobs.elementAt(index).clientAddress,
+                                  jobNumber: foundJobs.elementAt(index).jobNumber,
+                                  jobDetails: foundJobs.elementAt(index).jobDetails,
+                                  jobState: foundJobs.elementAt(index).jobState,
+                                  startDate: foundJobs.elementAt(index).startDate,
+                                  endDate: foundJobs.elementAt(index).endDate,
+                                );
+                              }
+                            ),
+                          ),
+                        ),
+
+                        // Fills any empty space after list
+                        Expanded(
+                         child: Container(),
+                        ),
+
+                        // Bottom Navigation Bar
+                        const CustomNavigationBar(
+                          screenIndexes: [0,2],
+                        ),
                       ],
                     ),
-                  ),
-
-                  bottomNavigationBar: const CustomNavigationBar(
-                    screenIndexes: [0,2],
                   ),
                 );
               },

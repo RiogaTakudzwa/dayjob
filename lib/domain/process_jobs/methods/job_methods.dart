@@ -24,7 +24,8 @@ class Method {
 
     // Ideally we'd like to check if the combination of prefix and suffix already exist in the DB and generate a new job number if it does
 
-    return "$prefix-$suffix$formattedDate";
+    String result = "$prefix-$suffix$formattedDate";
+    return result;
   }
 
   JobModel updateJob(JobModel job, String newState) {

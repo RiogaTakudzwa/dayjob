@@ -16,8 +16,6 @@ class MobileNavigationScreen extends StatefulWidget {
 
 class _MobileNavigationScreenState extends State<MobileNavigationScreen> {
 
-  late int screenIndex;
-
   @override
   void initState() {
     super.initState();
@@ -36,31 +34,30 @@ class _MobileNavigationScreenState extends State<MobileNavigationScreen> {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
 
-    return Container(
-      padding: EdgeInsets.only(
-        left: screenWidth * ScreenConstraints().screenPaddingSides,
-        right: screenWidth * ScreenConstraints().screenPaddingSides,
-      ),
-      width: screenWidth,
-      height: screenHeight
-        - (screenHeight * ScreenConstraints().appBarHeight)
-        - (screenHeight * ScreenConstraints().bottomNavigationBarHeight),
-      child: BlocBuilder<ScreenNavigationBloc, ScreenNavigationState>(
-        builder: (context, state) {
-          return Scaffold(
-            body: Column(
-              children: [
-                // Main body
-                ScreenIndex().screens[
-                  state.screenIndex
+    return SingleChildScrollView(
+      physics: const NeverScrollableScrollPhysics(),
+      child: SizedBox(
+        // padding: EdgeInsets.only(
+        //   left: screenWidth * ScreenConstraints().screenPaddingSides,
+        //   right: screenWidth * ScreenConstraints().screenPaddingSides,
+        // ),
+        width: screenWidth,
+        height: screenHeight,
+        child: BlocBuilder<ScreenNavigationBloc, ScreenNavigationState>(
+          builder: (context, state) {
+            return Scaffold(
+              body: Column(
+                children: [
+                  // Main body
+                  ScreenIndex().screens[
+                    state.screenIndex
+                  ],
                 ],
-              ],
-            )
-          );
-        }
-      )
+              )
+            );
+          }
+        )
+      ),
     );
   }
-
-
 }

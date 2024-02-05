@@ -47,7 +47,7 @@ class _TextInputFieldState extends State<TextInputField> {
           ),
           autovalidateMode: AutovalidateMode.onUserInteraction,
           validator: (textController) =>
-          textController != null && textController.isEmpty && widget.canBeEmpty ?
+          textController != null && textController.isEmpty && !widget.canBeEmpty ?
           "This field cannot be Empty" : null,
         );
       },
