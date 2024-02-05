@@ -43,7 +43,7 @@ class _NavigationIconState extends State<NavigationIcon> {
               child: IconButton(
                 onPressed: widget.onTap,
                 icon: Icon(
-                  size: 15,
+                  size: 20,
                   widget.icon,
                   color:
                     state.activeBottomNavigationIconIndex == widget.iconIndex ?
