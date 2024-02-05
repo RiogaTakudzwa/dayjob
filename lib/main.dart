@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 
+import 'common/loading_screen.dart';
 import 'domain/screen_navigation/screen_navigation_bloc.dart';
 import 'domain/navigation_bar_visibility/navigation_bar_visibility_bloc.dart';
 
@@ -36,7 +37,11 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider<ScreenNavigationBloc>(create: (context) => ScreenNavigationBloc()),
         BlocProvider<NavigationBarVisibilityBloc>(create: (context) => NavigationBarVisibilityBloc()),
-        BlocProvider<ProcessJobsBloc>(create: (context) => ProcessJobsBloc()),
+        BlocProvider<ProcessJobsBloc>(create: (context) {
+          final processJobsBloc = ProcessJobsBloc();
+          processJobsBloc.add(LoadJobsEvent());
+          return processJobsBloc;
+        }),
       ],
       child: MaterialApp(
         title: 'Day Job',
@@ -46,7 +51,7 @@ class MyApp extends StatelessWidget {
           ),
           useMaterial3: true,
         ),
-        home: LandingScreen(),
+        home: const LoadScreen(),
       ),
     );
   }

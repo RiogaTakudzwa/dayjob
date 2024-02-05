@@ -153,7 +153,7 @@ class _JobDetailsState extends State<JobDetails> {
 
                       BlocProvider.of<ScreenNavigationBloc>(context).add(
                           const UpdateScreenIndexEvent(
-                              index: 0
+                              index: 4
                           ));
 
                       BlocProvider.of<ScreenNavigationBloc>(context).add(const UpdateActiveNavigationIconIndexEvent(

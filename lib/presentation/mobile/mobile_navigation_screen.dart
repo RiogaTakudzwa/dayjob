@@ -21,10 +21,8 @@ class _MobileNavigationScreenState extends State<MobileNavigationScreen> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-
       // initialize screen index
       BlocProvider.of<ScreenNavigationBloc>(context).add(const UpdateScreenIndexEvent(index: 0));
-
     });
   }
 
@@ -37,10 +35,6 @@ class _MobileNavigationScreenState extends State<MobileNavigationScreen> {
     return SingleChildScrollView(
       physics: const NeverScrollableScrollPhysics(),
       child: SizedBox(
-        // padding: EdgeInsets.only(
-        //   left: screenWidth * ScreenConstraints().screenPaddingSides,
-        //   right: screenWidth * ScreenConstraints().screenPaddingSides,
-        // ),
         width: screenWidth,
         height: screenHeight,
         child: BlocBuilder<ScreenNavigationBloc, ScreenNavigationState>(

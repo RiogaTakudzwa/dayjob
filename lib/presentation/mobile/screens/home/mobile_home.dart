@@ -81,8 +81,6 @@ class _MobileHomeState extends State<MobileHome> {
             return BlocBuilder<ProcessJobsBloc, ProcessJobsState>(
               builder: (context, processJobsState) {
 
-                foundJobs = processJobsState.jobs;
-
                 return SizedBox(
                   height: screenHeight - (screenWidth * ScreenConstraints().buttonHeight),
                   width: screenWidth,
@@ -155,13 +153,11 @@ class _MobileHomeState extends State<MobileHome> {
                                   jobState: foundJobs.elementAt(index).jobState,
                                   startDate: foundJobs.elementAt(index).startDate,
                                   endDate: foundJobs.elementAt(index).endDate,
-
                                 );
                               }
                             ),
                           ),
                         ),
-
 
                         Expanded(
                           child: Container(),
