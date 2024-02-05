@@ -55,60 +55,58 @@ class _CreateJobState extends State<CreateJob> {
                 top: screenWidth * ScreenConstraints().screenPaddingSides,
                 bottom: screenHeight * ScreenConstraints().screenPaddingBottom
               ),
-              child: SingleChildScrollView(
-                child: Form(
-                  key: submitKey,
-                  child: Column(
-                    children: [
-                      TextInputField(
-                        textEditingController: jobTitleController,
-                        canBeEmpty: false,
-                        hintText: "Enter Job Title",
-                      ),
+              child: Form(
+                key: submitKey,
+                child: Column(
+                  children: [
+                    TextInputField(
+                      textEditingController: jobTitleController,
+                      canBeEmpty: false,
+                      hintText: "Enter Job Title",
+                    ),
 
-                      SizedBox(height: 10),
+                    SizedBox(height: 10),
 
-                      TextInputField(
-                        textEditingController: jobTypeController,
-                        canBeEmpty: false,
-                        hintText: "Enter Job Type",
-                      ),
+                    TextInputField(
+                      textEditingController: jobTypeController,
+                      canBeEmpty: false,
+                      hintText: "Enter Job Type",
+                    ),
 
-                      SizedBox(height: 10),
+                    SizedBox(height: 10),
 
-                      TextInputField(
-                        textEditingController: clientNameController,
-                        canBeEmpty: false,
-                        hintText: "Enter Client name",
-                      ),
+                    TextInputField(
+                      textEditingController: clientNameController,
+                      canBeEmpty: false,
+                      hintText: "Enter Client name",
+                    ),
 
-                      SizedBox(height: 10),
+                    SizedBox(height: 10),
 
-                      TextInputField(
-                        textEditingController: clientAddress1Controller,
-                        canBeEmpty: false,
-                        hintText: "Enter Client Address 1",
-                      ),
+                    TextInputField(
+                      textEditingController: clientAddress1Controller,
+                      canBeEmpty: false,
+                      hintText: "Enter Client Address 1",
+                    ),
 
-                      SizedBox(height: 10),
+                    SizedBox(height: 10),
 
-                      TextInputField(
-                        textEditingController: clientAddress2Controller,
-                        canBeEmpty: true,
-                        hintText: "Enter Client Address 2",
-                      ),
+                    TextInputField(
+                      textEditingController: clientAddress2Controller,
+                      canBeEmpty: true,
+                      hintText: "Enter Client Address 2",
+                    ),
 
-                      SizedBox(height: 10),
+                    SizedBox(height: 10),
 
-                      TextInputField(
-                        textEditingController: clientAddress3Controller,
-                        canBeEmpty: true,
-                        hintText: "Enter Client Address 3",
-                      ),
+                    TextInputField(
+                      textEditingController: clientAddress3Controller,
+                      canBeEmpty: true,
+                      hintText: "Enter Client Address 3",
+                    ),
 
-                      SizedBox(height: 10),
-                    ],
-                  ),
+                    SizedBox(height: 10),
+                  ],
                 ),
               ),
             ),
@@ -131,9 +129,6 @@ class _CreateJobState extends State<CreateJob> {
               onTap: (){
 
                 final isValid = submitKey.currentState!.validate();
-
-                print("Checking");
-                print(isValid);
 
                 if(!isValid){
                   AppSnackBar.showSnackBar(
@@ -170,6 +165,16 @@ class _CreateJobState extends State<CreateJob> {
 
                   BlocProvider.of<ScreenNavigationBloc>(context).add(const UpdateActiveNavigationIconIndexEvent(
                       activeBottomNavigationIconIndex: 0
+                  ));
+
+                  // // Update search to bloc
+                  // BlocProvider.of<SearchBloc>(context).add(
+                  //   UpdateSearchEvent(
+                  //     searchString: ""
+                  // ));
+
+                  BlocProvider.of<ProcessJobsBloc>(context).add(
+                    SearchEvent(searchString: ""
                   ));
                 }
               },

@@ -27,16 +27,46 @@ class ProcessJobsBloc extends Bloc<ProcessJobsEvent, ProcessJobsState> {
     jobState: "Job State",
     startDate: DateTime.now().toString(),
     endDate: DateTime.now().toString(),
-    jobs: const []
+    jobs: const [],
+    searchResults: const [],
   )) {
     on<AddJobEvent>(_onAddJob);
     on<LoadJobsEvent>(_onLoadJobs);
+    on<ClearJobsEvent>(_onClearJobs);
     on<DeleteJobEvent>(_onDeleteJob);
     on<UpdateJobStateEvent>(_onUpdateJobState);
     on<UpdateJobFieldsEvent>(_onUpdateJobFields);
     on<UpdateClientFieldsEvent>(_onUpdateClientFields);
     on<SetDefaultJobStateEvent>(_onSetDefaultJobState);
     on<SetActiveJobEvent>(_onSetActiveJob);
+    on<SearchEvent>(_onSearch);
+  }
+
+  _onSearch(event, emit) async {
+
+    List<JobModel> jobs = [];
+
+    if(event.searchString.length == 0){
+      add(LoadJobsEvent());
+    }else{
+      jobs = Method().searchJobs(state.jobs, event.searchString);
+
+      emit(LoadJobs(
+        state.jobTitle,
+        state.jobType,
+        state.clientName,
+        state.clientAddress,
+        state.jobNumber,
+        state.jobDetails,
+        state.tasks,
+        state.jobState,
+        state.startDate,
+        state.endDate,
+        state.jobs,
+        jobs
+      ));
+    }
+
   }
 
   _onAddJob(event, emit) async {
@@ -55,6 +85,8 @@ class ProcessJobsBloc extends Bloc<ProcessJobsEvent, ProcessJobsState> {
       "startDate": event.startDate,
       "endDate": event.endDate,
     });
+
+    add(LoadJobsEvent());
   }
 
   _onLoadJobs(event, emit){
@@ -90,12 +122,67 @@ class ProcessJobsBloc extends Bloc<ProcessJobsEvent, ProcessJobsState> {
       state.startDate,
       state.endDate,
       jobs,
+      jobs
     ));
+  }
 
+  _onClearJobs(event, emit){
+    emit(LoadJobs(
+      state.jobTitle,
+      state.jobType,
+      state.clientName,
+      state.clientAddress,
+      state.jobNumber,
+      state.jobDetails,
+      state.tasks,
+      state.jobState,
+      state.startDate,
+      state.endDate,
+      const [],
+      const [],
+    ));
   }
 
   _onDeleteJob(event, emit) async {
-    jobsBox.delete(event.jobKey);
+    await jobsBox.delete(event.jobKey);
+
+    // Open hive box
+    final data = jobsBox.keys.map((key) {
+      final item = jobsBox.get(key);
+      return {
+        "key": key,
+        "jobTitle": item["jobTitle"],
+        "jobType": item["jobType"],
+        "clientName": item["clientName"],
+        "clientAddress": item["clientAddress"],
+        "jobNumber": item["jobNumber"],
+        "jobDetails": item["jobDetails"],
+        "tasks": [],
+        "jobState": item["jobState"],
+        "startDate": item["startDate"],
+        "endDate": item["endDate"],
+      };
+    }).toList();
+
+    List<JobModel> jobs = Method().loadJobs(data);
+
+    emit(LoadJobs(
+        state.jobTitle,
+        state.jobType,
+        state.clientName,
+        state.clientAddress,
+        state.jobNumber,
+        state.jobDetails,
+        state.tasks,
+        state.jobState,
+        state.startDate,
+        state.endDate,
+        jobs,
+        jobs
+    ));
+
+    print("Number");
+    print(jobs.length);
   }
 
   _onUpdateJobState(event, emit) async {
@@ -161,6 +248,7 @@ class ProcessJobsBloc extends Bloc<ProcessJobsEvent, ProcessJobsState> {
       DateTime.now().toString(),
       DateTime.now().toString(),
       state.jobs,
+      state.searchResults,
     ));
 
   }
@@ -181,6 +269,7 @@ class ProcessJobsBloc extends Bloc<ProcessJobsEvent, ProcessJobsState> {
       event.startDate,
       event.endDate,
       state.jobs,
+      state.searchResults,
     ));
 
   }
@@ -199,6 +288,7 @@ class ProcessJobsBloc extends Bloc<ProcessJobsEvent, ProcessJobsState> {
       state.startDate,
       state.endDate,
       state.jobs,
+      state.searchResults,
     ));
 
   }
@@ -206,17 +296,18 @@ class ProcessJobsBloc extends Bloc<ProcessJobsEvent, ProcessJobsState> {
   _onSetActiveJob(event, emit) async {
 
     emit(UpdateClientValues(
-      event.jobTitle,
+      state.jobTitle,
       event.jobType,
       event.clientName,
       event.clientAddress,
       event.jobNumber,
-      event.jobDetails,
+      state.jobDetails,
       const [],
-      event.jobState,
-      event.startDate,
-      event.endDate,
-      event.jobs,
+      state.jobState,
+      state.startDate,
+      state.endDate,
+      state.jobs,
+      state.searchResults,
     ));
 
   }

@@ -42,65 +42,49 @@ class JobWidget extends StatefulWidget {
 }
 
 class _JobWidgetState extends State<JobWidget> {
+  navigationFunction(int activeBottomNavigationIconIndex, String screenTitle,
+      int screenIndex, bool isBottomNavigationVisible) {
+    BlocProvider.of<NavigationBarVisibilityBloc>(context).add(
+        UpdateNavigationBarVisibilityEvent(
+            visibility: isBottomNavigationVisible));
 
-  navigationFunction(
-      int activeBottomNavigationIconIndex,
-      String screenTitle,
-      int screenIndex,
-      bool isBottomNavigationVisible
-      ){
+    BlocProvider.of<ScreenNavigationBloc>(context).add(
+        UpdateActiveNavigationIconIndexEvent(
+            activeBottomNavigationIconIndex: activeBottomNavigationIconIndex));
 
-    BlocProvider.of<NavigationBarVisibilityBloc>(context).add(UpdateNavigationBarVisibilityEvent(
-        visibility: isBottomNavigationVisible
-    ));
+    BlocProvider.of<ScreenNavigationBloc>(context).add(
+        UpdatePreviousScreenIndexEvent(
+            previousScreenIndex: BlocProvider.of<ScreenNavigationBloc>(context)
+                .state
+                .screenIndex));
 
-    BlocProvider.of<ScreenNavigationBloc>(context).add(UpdateActiveNavigationIconIndexEvent(
-        activeBottomNavigationIconIndex: activeBottomNavigationIconIndex
-    ));
-
-    BlocProvider.of<ScreenNavigationBloc>(context).add(UpdatePreviousScreenIndexEvent(
-        previousScreenIndex: BlocProvider.of<ScreenNavigationBloc>(context).state.screenIndex
-    ));
-
-    BlocProvider.of<ScreenNavigationBloc>(context).add(UpdatePreviousScreenTitleEvent(
-        previousScreenTitle: BlocProvider.of<ScreenNavigationBloc>(context).state.screenTitle
-    ));
+    BlocProvider.of<ScreenNavigationBloc>(context).add(
+        UpdatePreviousScreenTitleEvent(
+            previousScreenTitle: BlocProvider.of<ScreenNavigationBloc>(context)
+                .state
+                .screenTitle));
 
     BlocProvider.of<ScreenNavigationBloc>(context).add(UpdateScreenTitleEvent(
-        screenTitle: BlocProvider.of<ScreenNavigationBloc>(context).state.previousScreenTitle
-    ));
+        screenTitle: BlocProvider.of<ScreenNavigationBloc>(context)
+            .state
+            .previousScreenTitle));
 
     BlocProvider.of<ScreenNavigationBloc>(context).add(UpdateScreenIndexEvent(
-        index: BlocProvider.of<ScreenNavigationBloc>(context).state.previousScreenIndex
-    ));
-
+        index: BlocProvider.of<ScreenNavigationBloc>(context)
+            .state
+            .previousScreenIndex));
   }
 
   void deleteJob() {
     // Delete job
-    BlocProvider.of<ProcessJobsBloc>(context).add(
-      DeleteJobEvent(jobKey:widget.jobKey
-    ));
+    BlocProvider.of<ProcessJobsBloc>(context)
+        .add(SearchEvent(searchString: ""));
 
-  }
-
-  setActiveJob(){
-    BlocProvider.of<ProcessJobsBloc>(context).add(SetActiveJobEvent(
-      jobTitle: widget.jobTitle,
-      jobType: widget.jobType,
-      clientName: widget.clientName,
-      clientAddress: widget.clientAddress,
-      jobNumber: widget.jobNumber,
-      jobDetails: widget.jobDetails,
-      jobState: widget.jobState,
-      startDate: widget.startDate,
-      endDate: widget.endDate
-    ));
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
 
@@ -108,8 +92,8 @@ class _JobWidgetState extends State<JobWidget> {
       margin: EdgeInsets.only(
         left: screenWidth * ScreenConstraints().screenPaddingSides,
         right: screenWidth * ScreenConstraints().screenPaddingSides,
-        bottom: screenWidth * ScreenConstraints().screenPaddingSides/2,
-        top: screenWidth * ScreenConstraints().screenPaddingSides/2,
+        bottom: screenWidth * ScreenConstraints().screenPaddingSides / 2,
+        top: screenWidth * ScreenConstraints().screenPaddingSides / 2,
       ),
       padding: EdgeInsets.only(
         left: screenWidth * ScreenConstraints().screenPaddingSides,
@@ -134,28 +118,46 @@ class _JobWidgetState extends State<JobWidget> {
         children: [
           Expanded(
             child: GestureDetector(
-              onTap: (){
-                // Navigate to details screen
-                navigationFunction(1, widget.jobTitle, 3, true);
-                setActiveJob();
+              onTap: () {
+                BlocProvider.of<NavigationBarVisibilityBloc>(context)
+                    .add(UpdateNavigationBarVisibilityEvent(visibility: false));
+
+                BlocProvider.of<ScreenNavigationBloc>(context).add(
+                    const UpdateActiveNavigationIconIndexEvent(
+                        activeBottomNavigationIconIndex: 0));
+
+                BlocProvider.of<ScreenNavigationBloc>(context)
+                    .add(UpdateScreenTitleEvent(screenTitle: widget.jobTitle));
+
+                BlocProvider.of<ScreenNavigationBloc>(context)
+                    .add(const UpdateBackButtonStateEvent(
+                  isBackButtonActive: true,
+                ));
+
+                BlocProvider.of<ScreenNavigationBloc>(context)
+                    .add(const UpdateScreenIndexEvent(index: 3));
+
+                BlocProvider.of<ProcessJobsBloc>(context).add(SetActiveJobEvent(
+                  jobType: widget.jobType,
+                  clientName: widget.clientName,
+                  clientAddress: widget.clientAddress,
+                  jobNumber: widget.jobNumber,
+                ));
               },
               child: Container(
                 alignment: Alignment.centerLeft,
-                child: TitleText(
-                  text: widget.jobTitle
-                ),
+                child: TitleText(text: widget.jobTitle),
               ),
             ),
           ),
           IconButton(
-            onPressed: (){
-              deleteJob();
-            },
-            icon: const Icon(
-              Icons.delete_outline,
-              color: ColourScheme.mainAppTheme,
-            )
-          )
+              onPressed: () {
+                deleteJob();
+              },
+              icon: const Icon(
+                Icons.delete_outline,
+                color: ColourScheme.mainAppTheme,
+              ))
         ],
       ),
     );

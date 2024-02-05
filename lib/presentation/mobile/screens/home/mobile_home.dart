@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 import '../../../../common/constraints/screen_constraits.dart';
 import '../../../../common/widgets/app_bar/app_bar.dart';
@@ -51,14 +52,25 @@ class _MobileHomeState extends State<MobileHome> {
 
     if (mounted){
       BlocProvider.of<ProcessJobsBloc>(context).add(LoadJobsEvent());
+
+      // BlocProvider.of<ProcessJobsBloc>(context).add(
+      //   SearchEvent(searchText: ""
+      // ));
+
       foundJobs = BlocProvider.of<ProcessJobsBloc>(context).state.jobs;
     }
 
     Hive.box("Jobs").listenable().addListener(() {
       // Bloc Event to reload data from hive box
       if (mounted){
+        BlocProvider.of<ProcessJobsBloc>(context).add(ClearJobsEvent());
         BlocProvider.of<ProcessJobsBloc>(context).add(LoadJobsEvent());
+
         foundJobs = BlocProvider.of<ProcessJobsBloc>(context).state.jobs;
+
+        // BlocProvider.of<ProcessJobsBloc>(context).add(
+        //   SearchEvent(searchText: ""
+        // ));
       }
     });
 
@@ -88,6 +100,13 @@ class _MobileHomeState extends State<MobileHome> {
                       ), child: const CustomAppBar(),
                     ),
 
+                    // floatingActionButton: FloatingActionButton(
+                    //   child: Icon(Icons.replay),
+                    //     onPressed: (){
+                    //     setState(() {
+                    //   });
+                    // }),
+
                     body: Column(
                       children: [
                         // Search
@@ -99,6 +118,10 @@ class _MobileHomeState extends State<MobileHome> {
                           ),
                           child: TextFormField(
                             onChanged: (value){
+                              // Update search to bloc
+                              // BlocProvider.of<ProcessJobsBloc>(context).add(SearchEvent(searchText: value));
+
+                              // Then pass it to search function
                               filter(value);
                             },
                             keyboardType: TextInputType.emailAddress,
@@ -131,7 +154,7 @@ class _MobileHomeState extends State<MobileHome> {
 
                         SingleChildScrollView(
                           child: SizedBox(
-                            height: 300,
+                            height: 500,
                             child: ListView.builder(
                               itemCount: foundJobs.length,
                               itemBuilder: (context, index){
@@ -146,15 +169,16 @@ class _MobileHomeState extends State<MobileHome> {
                                   jobState: foundJobs.elementAt(index).jobState,
                                   startDate: foundJobs.elementAt(index).startDate,
                                   endDate: foundJobs.elementAt(index).endDate,
+
                                 );
                               }
                             ),
                           ),
                         ),
 
-                        // Fills any empty space after list
+
                         Expanded(
-                         child: Container(),
+                          child: Container(),
                         ),
 
                         // Bottom Navigation Bar

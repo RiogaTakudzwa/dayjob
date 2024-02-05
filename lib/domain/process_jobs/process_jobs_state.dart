@@ -12,6 +12,7 @@ class ProcessJobsState extends Equatable {
   final String startDate;
   final String endDate;
   final List<JobModel> jobs;
+  final List<JobModel> searchResults;
 
 const ProcessJobsState({
   required this.jobTitle,
@@ -25,6 +26,7 @@ const ProcessJobsState({
   required this.startDate,
   required this.endDate,
   required this.jobs,
+  required this.searchResults,
 });
 
 @override
@@ -40,6 +42,7 @@ List<Object?> get props => [
   startDate,
   endDate,
   jobs,
+  searchResults,
 ];
 
 }
@@ -58,6 +61,7 @@ class SetInputFieldsToDefaultValues extends ProcessJobsState {
     String startDate,
     String endDate,
     List<JobModel> jobs,
+    List<JobModel> searchResults,
   ) : super (
     jobTitle: jobTitle,
     jobType: jobType,
@@ -69,7 +73,8 @@ class SetInputFieldsToDefaultValues extends ProcessJobsState {
     jobState: jobState,
     startDate: startDate,
     endDate: endDate,
-    jobs: jobs
+    jobs: jobs,
+    searchResults: searchResults,
   );
 
   @override
@@ -85,6 +90,7 @@ class SetInputFieldsToDefaultValues extends ProcessJobsState {
     startDate,
     endDate,
     jobs,
+    searchResults,
   ];
 }
 
@@ -102,6 +108,7 @@ class UpdateClientValues extends ProcessJobsState {
       String startDate,
       String endDate,
       List<JobModel> jobs,
+      List<JobModel> searchResults,
       ) : super (
       jobTitle: jobTitle,
       jobType: jobType,
@@ -113,7 +120,8 @@ class UpdateClientValues extends ProcessJobsState {
       jobState: jobState,
       startDate: startDate,
       endDate: endDate,
-      jobs: jobs
+      jobs: jobs,
+      searchResults: searchResults,
   );
 
   @override
@@ -129,6 +137,7 @@ class UpdateClientValues extends ProcessJobsState {
     startDate,
     endDate,
     jobs,
+    searchResults,
   ];
 }
 
@@ -146,6 +155,7 @@ class UpdateJobValues extends ProcessJobsState {
       String startDate,
       String endDate,
       List<JobModel> jobs,
+      List<JobModel> searchResults,
       ) : super (
       jobTitle: jobTitle,
       jobType: jobType,
@@ -157,7 +167,8 @@ class UpdateJobValues extends ProcessJobsState {
       jobState: jobState,
       startDate: startDate,
       endDate: endDate,
-      jobs: jobs
+      jobs: jobs,
+      searchResults: searchResults,
   );
 
   @override
@@ -173,6 +184,7 @@ class UpdateJobValues extends ProcessJobsState {
     startDate,
     endDate,
     jobs,
+    searchResults,
   ];
 }
 
@@ -190,6 +202,7 @@ class LoadJobs extends ProcessJobsState {
       String startDate,
       String endDate,
       List<JobModel> jobs,
+      List<JobModel> searchResults,
       ) : super (
       jobTitle: jobTitle,
       jobType: jobType,
@@ -201,7 +214,8 @@ class LoadJobs extends ProcessJobsState {
       jobState: jobState,
       startDate: startDate,
       endDate: endDate,
-      jobs: jobs
+      jobs: jobs,
+      searchResults: searchResults,
   );
 
   @override
@@ -217,5 +231,6 @@ class LoadJobs extends ProcessJobsState {
     startDate,
     endDate,
     jobs,
+    searchResults,
   ];
 }

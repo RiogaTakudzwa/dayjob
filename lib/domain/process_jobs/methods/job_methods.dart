@@ -5,6 +5,18 @@ import '../../../repositories/job_model.dart';
 
 class Method {
 
+  List<JobModel> searchJobs(List<JobModel> jobsInHive, String searchString){
+    List<JobModel> jobs = [];
+
+    for(JobModel job in jobsInHive){
+      if(job.jobTitle.contains(searchString)){
+        jobs.add(job);
+      }
+    }
+
+    return jobs;
+  }
+
   List<JobModel> loadJobs(List<Map<String, dynamic>> jobsInHive){
     List<JobModel> jobs = [];
     for(Map<String, dynamic> job in jobsInHive){
